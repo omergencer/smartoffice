@@ -44,19 +44,21 @@ class DayStartState(State):
             #self.set_next_state(STATE_THREE)
 
 class WalkState(State):
-    def pathfind(self):
-        layout = util.layout
-        if "coridor" in self.agent.location:
-            if self.agent.go_to in layout[self.agent.location]:
-                path = [self.agent.go_to]
-            else:
-                path = ["coridor2", self.agent.go_to]
+    if "coridor" in start:
+        if end in layout[start]:
+            path = [end]
         else:
-            if layout[self.agent.go_to] in layout[layout[self.agent.location]]:
-                path = [layout[self.agent.location],layout[self.agent.go_to],self.agent.go_to]
+            path = ["coridor2", end]
+    else:
+        if "coridor" in end:
+            if end in layout[layout[start]]:
+                path = [layout[start],end]
             else:
-                path = [layout[self.agent.location],"coridor2",layout[self.agent.go_to],self.agent.go_to]
-        return path
+                path = [layout[start],layout[end],end]
+        elif layout[end] in layout[layout[start]]:
+            path = [layout[start],layout[end],end]
+        else:
+            path = [layout[start],"coridor2",layout[end],end]
 
     def walk(self,go):
         print(f"{self.agent.pid} moving to {go}")
