@@ -43,64 +43,45 @@ class DayStartState(State):
             #await self.send(msg)
             #self.set_next_state(STATE_THREE)
 
-class WalkState(State):  
-    def move_to(self,path,arr = False):
-        print(f"{self.agent.pid} moving to {path}")
-        util.Event("entry_"+path, self.agent.name)
-        if arr == False:
-            util.Event("exit_"+path, self.agent.name)
-    
-    def pathfinder(self,current,goal):
-        b_layout = {"meeting":"coridor2",
-                     "office1":"coridor1",
-                     "office2":"coridor2",
-                     "office3":"coridor2",
-                     "lobby":"coridor1",
-                     "supply":"coridor3",
-                     "coridor1":"coridor1",
-                     "coridor2":"coridor2",
-                     "coridor3":"coridor3",
-                     "break":"coridor1"}
-        
-        if b_layout[current] == b_layout[goal]:
-            path = [b_layout[current], goal]
-        else:
-            if b_layout[current] in ["coridor1", "coridor3"] and b_layout[goal] in ["coridor1", "coridor3"]:
-                if "coridor" not in goal:
-                    path = [b_layout[current], "coridor2", b_layout[goal]]
-                else:
-                    path = [b_layout[current], "coridor2", b_layout[goal], goal]
+class WalkState(State):
+    def pathfind(self):
+        layout = util.layout
+        if "coridor" in self.agent.location:
+            if self.agent.go_to in layout[self.agent.location]:
+                path = [self.agent.go_to]
             else:
-                if "coridor" not in goal:
-                    path = [b_layout[current], b_layout[goal]]
-                else:
-                    path = [b_layout[current], b_layout[goal], goal]
+                path = ["coridor2", self.agent.go_to]
+        else:
+            if layout[self.agent.go_to] in layout[layout[self.agent.location]]:
+                path = [layout[self.agent.location],layout[self.agent.go_to],self.agent.go_to]
+            else:
+                path = [layout[self.agent.location],"coridor2",layout[self.agent.go_to],self.agent.go_to]
         return path
-    
+
+    def walk(self,go):
+        print(f"{self.agent.pid} moving to {go}")
+        util.Event("exit_"+self.agent.location, self.agent.pid)
+        util.Event("entry_"+go, self.agent.pid)
+        self.agent.location = go
+        
     async def run(self):
         print(f"{self.agent.pid} is walking to {self.agent.go_to}")
-        pathway = self.pathfinder(self.agent.location,self.agent.go_to)
-        util.Event("exit_"+self.agent.location, self.agent.name)
-        for path in pathway:############
-            if path == pathway[-1]:
-                self.move_to(path, arr = True)
-            else:
-                self.move_to(path)
-        self.agent.location = self.agent.go_to
-        if  "office" in self.agent.go_to:
+        for path in self.pathfind():
+            self.walk(path)
+        if "office" in self.agent.location:
             if self.agent.position == "W":
                 self.set_next_state(STATE_THREE)
             else:
                 self.set_next_state(STATE_SIX)
-        elif self.agent.go_to == "break":
+        elif self.agent.location == "break":
             self.set_next_state(STATE_FOUR)
-        elif self.agent.go_to == "lobby":
+        elif self.agent.location == "lobby":
             self.set_next_state(STATE_EIGHT)
-        elif self.agent.go_to == "meeting":
+        elif self.agent.location == "meeting":
             self.set_next_state(STATE_FIVE)
         else:
             self.set_next_state(STATE_SEVEN)
-            
+        
 class WorkState(State):
     async def run(self):
         print(f"{self.agent.pid} is working")
@@ -148,7 +129,7 @@ class WorkState_M(State):#team might be an issue
                 self.agent.go_to = "lobby"
                 self.set_next_state(STATE_TWO)
             else:
-                for person in team:
+                for person in self.agent.team:
                     msg4 = util.util.make_message(meeting_inform_template, to = person+'@localhost')#temp
                     await self.send(msg4)
                 self.agent.go_to = "meeting"
