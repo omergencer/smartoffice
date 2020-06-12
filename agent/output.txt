@@ -1,0 +1,140 @@
+Worker_1 starting their day
+Manager starting their day
+Custodian_1 starting their day
+Room temp: 24
+corridor1 temp is 24
+Custodian_1 is walking to supply
+Custodian_1 moving to corridor1    
+corridor1 lights on
+Custodian_1 moving to corridor2    
+corridor1 lights off
+Custodian_1 moving to corridor3    
+Custodian_1 moving to supply       
+Custodian_1 is working
+Custodian_1 is walking to corridor1
+Custodian_1 moving to corridor3    
+Custodian_1 moving to corridor2    
+Custodian_1 moving to corridor1    
+corridor1 lights on
+Custodian_1 is working
+Manager is walking to office2
+Manager moving to corridor1
+Manager moving to corridor2
+Manager moving to office2  
+Manager is working
+Worker_1 is walking to office1
+Worker_1 moving to corridor1
+Worker_1 moving to corridor2
+Worker_1 moving to corridor1
+Worker_1 moving to office1  
+office1 lights on
+Worker_1 is working
+Manager is walking to meeting
+Manager moving to corridor2   
+Manager moving to corridor3   
+Manager moving to meeting     
+meeting lights on
+Manager is in a meeting       
+Worker_1 is walking to meeting
+Worker_1 moving to corridor1  
+office1 lights off
+Worker_1 moving to corridor2  
+Worker_1 moving to corridor3  
+Worker_1 moving to meeting
+Worker_1 is in a meeting
+Manager is walking to office2
+Manager moving to corridor3
+Manager moving to corridor2
+Manager moving to office2
+Worker_1 is walking to office1
+Worker_1 moving to corridor3
+meeting lights off
+Worker_1 moving to corridor2
+Worker_1 moving to corridor1
+Worker_1 moving to office1
+office1 lights on
+Manager is working
+Worker_1 is working
+Custodian_1 is walking to corridor2
+Custodian_1 moving to corridor2
+corridor1 lights off
+Custodian_1 is working
+Worker_1 is walking to break
+Worker_1 moving to corridor1
+office1 lights off
+corridor1 lights on
+Worker_1 moving to corridor2
+corridor1 lights off
+Worker_1 moving to corridor1
+corridor1 lights on
+Worker_1 moving to break
+corridor1 lights off
+Worker_1 is taking a break
+Manager is walking to break
+Manager moving to corridor2
+Manager moving to corridor1
+corridor1 lights on
+Manager moving to break
+corridor1 lights off
+Manager is taking a break
+Worker_1 is walking to office1
+Worker_1 moving to corridor1
+corridor1 lights on
+Worker_1 moving to corridor2
+corridor1 lights off
+Worker_1 moving to corridor1
+corridor1 lights on
+Worker_1 moving to office1
+corridor1 lights off
+office1 lights on
+Worker_1 is working
+Manager is walking to office2
+Manager moving to corridor1
+corridor1 lights on
+Manager moving to corridor2
+corridor1 lights off
+Manager moving to office2
+Manager is working
+Custodian_1 is walking to corridor3
+Custodian_1 moving to corridor3
+Custodian_1 is working
+Custodian_1 is walking to break
+Custodian_1 moving to corridor2
+Custodian_1 moving to break
+Custodian_1 is taking a break
+Manager is walking to lobby
+Manager moving to corridor2
+Manager moving to corridor1
+corridor1 lights on
+Manager moving to lobby
+corridor1 lights off
+Manager finished their day
+Custodian_1 is walking to supply
+Custodian_1 moving to corridor1
+corridor1 lights on
+Custodian_1 moving to corridor2
+corridor1 lights off
+Custodian_1 moving to corridor3
+Custodian_1 moving to supply
+Custodian_1 is working
+Custodian_1 is walking to corridor1
+Custodian_1 moving to corridor3
+Custodian_1 moving to corridor2
+Custodian_1 moving to corridor1
+corridor1 lights on
+Custodian_1 is working
+Worker_1 is walking to lobby
+Worker_1 moving to corridor1
+office1 lights off
+Worker_1 moving to corridor2
+Worker_1 moving to corridor1
+Worker_1 moving to lobby
+Worker_1 finished their day
+Custodian_1 is walking to corridor2
+Custodian_1 moving to corridor2
+corridor1 lights off
+Custodian_1 is working
+Custodian_1 is walking to lobby
+Custodian_1 moving to corridor2
+Custodian_1 moving to lobby
+Custodian_1 finished their day
