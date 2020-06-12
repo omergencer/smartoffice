@@ -1,4 +1,8 @@
-import person,room
+import person,room,building
+
+building1 = building.BuildingAgent("Agent9-om@anoxinon.me", "1234")
+future = building1.start()
+future.result()
 
 room1 = room.MeetingAgent("Agent5-om@anoxinon.me", "1234")
 room1.rid="meeting"
@@ -10,13 +14,13 @@ room2.rid="office1"
 future = room2.start()
 future.result()
 
-room3 = room.CoridorAgent("Agent7-om@anoxinon.me", "1234")
-room3.rid="coridor1"
+room3 = room.CorridorAgent("Agent7-om@anoxinon.me", "1234")
+room3.rid="corridor1"
 future = room3.start()
 future.result()
 
 person1 = person.Worker("Agent3-om@anoxinon.me", "1234")
-person1.pid="Dude1"
+person1.pid="Worker_1"
 person1.office="office1"
 future = person1.start()
 future.result()
@@ -30,7 +34,9 @@ future = manager1.start()
 future.result()
 
 custodian = person.Custodian("Agent8-om@anoxinon.me", "1234")
-custodian.pid="Kole"
+custodian.pid="Custodian_1"
 future = custodian.start()
 future.result()
+
+
 

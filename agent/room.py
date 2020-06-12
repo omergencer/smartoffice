@@ -6,10 +6,10 @@ from spade.template import Template
 from spade.behaviour import CyclicBehaviour, OneShotBehaviour, State
 
 #also add template
-#currently written for coridor, seperate DONE
+#currently written for corridor, seperate DONE
 #test seperation
 
-class CoridorAgent(Agent, util.Observer):
+class CorridorAgent(Agent, util.Observer):
     rid = ""
     
     def light_on(self, who):
@@ -17,18 +17,18 @@ class CoridorAgent(Agent, util.Observer):
             print(f"{self.rid} lights on")
         self.arrival = True
         self.occ += 1
-        print(f"____OCC{self.occ}")
+        
     def light_off(self, who):
         if self.occ == 1:
             print(f"{self.rid} lights off")
         self.occ -= 1
-        print(f"____OCC{self.occ}")
+       
 
     async def setup(self):
         util.Observer.__init__(self)
-        self.add_behaviour(self.CoridorBehaviour())
-        self.observe('entry_coridor1',  self.light_on)
-        self.observe('exit_coridor1',  self.light_off)
+        self.add_behaviour(self.CorridorBehaviour())
+        self.observe('entry_corridor1',  self.light_on)
+        self.observe('exit_corridor1',  self.light_off)
         self.occ = 0
         self.arrival = False
         self.assigned_to = ""
@@ -41,7 +41,7 @@ class CoridorAgent(Agent, util.Observer):
             await asyncio.sleep(10)
             self.agent.temp = False
 
-    class CoridorBehaviour(OneShotBehaviour):
+    class CorridorBehaviour(OneShotBehaviour):
         async def run(self):
             await asyncio.sleep(10)
             self.agent.temp = self.agent.pref[0]
@@ -55,7 +55,7 @@ class CoridorAgent(Agent, util.Observer):
                     self.agent.pref[0] = msg.body
                 elif msg.metadata["topic"] == "def":
                     self.agent.pref[1] = msg.body
-                    self.agent.add_behaviour(behaviour = RoomAgent.CoridorBehaviour())
+                    self.agent.add_behaviour(behaviour = RoomAgent.corridorBehaviour())
             if time.time() - self.agent.time > 100:
                 self.agent.add_behaviour(behaviour = RoomAgent.OffBehaviour())
 

@@ -16,7 +16,11 @@ STATE_SEVEN = "WorkState_C"
 STATE_EIGHT = "DayEndState"
 
 meeting_inform_template = util.make_metadata_template(performative='inform', ontology='meeting')
-n_attendance_inform_template = util.make_metadata_template(performative='inform', ontology='na')
+pref_inform_template = util.make_metadata_template(performative='inform', ontology='pref')
+arrival_inform_template = util.make_metadata_template(performative='inform', ontology='ok')
+exit_inform_template = util.make_metadata_template(performative='inform', ontology='exit')
+absence_inform_template = util.make_metadata_template(performative='inform', ontology='na')
+
 
 class ExampleFSMBehaviour(FSMBehaviour):
     async def on_start(self):
@@ -34,31 +38,41 @@ class DayStartState(State):
             await asyncio.sleep(move_time)
             self.agent.location = "lobby"
             self.agent.go_to = self.agent.office
-            #msg = util.make_message(arrival_inform_template, to='building@localhost')
-            #await self.send(msg)
+            
+            if self.agent.position != "C":
+                msg = util.make_message(arrival_inform_template, to='Agent9-om@anoxinon.me')
+                msg.body = self.agent.office
+                await self.send(msg)
             self.set_next_state(STATE_TWO)
         else:
             print(f"{self.agent.pid} not going to work")
-            #msg = util.make_message(arrival_inform_template, to='building@localhost')
-            #await self.send(msg)
-            #self.set_next_state(STATE_THREE)
+            msg = util.make_message(absence_inform_template, to='Agent9-om@anoxinon.me')
+            if self.agent.position != "C":
+                msg.body = self.agent.office
+            await self.send(msg)
 
 class WalkState(State):
-    if "coridor" in start:
-        if end in layout[start]:
-            path = [end]
-        else:
-            path = ["coridor2", end]
-    else:
-        if "coridor" in end:
-            if end in layout[layout[start]]:
-                path = [layout[start],end]
+    def pathfind(self):
+        layout = util.layout
+        if "corridor" in self.agent.location:
+            if self.agent.go_to in layout[self.agent.location]:
+                path = [self.agent.go_to]
             else:
-                path = [layout[start],layout[end],end]
-        elif layout[end] in layout[layout[start]]:
-            path = [layout[start],layout[end],end]
+                path = ["corridor2", self.agent.go_to]
         else:
-            path = [layout[start],"coridor2",layout[end],end]
+            if "corridor" in self.agent.go_to:
+                if self.agent.go_to in layout[self.agent.location]:
+                    path = [layout[self.agent.location]]
+                elif self.agent.go_to == "corridor2":
+                    path = [layout[self.agent.location],"corridor2"]
+                else:
+                    path = [layout[self.agent.location],"corridor2","corridor1"]
+            else:
+                if layout[self.agent.go_to] in layout[layout[self.agent.location]]:
+                    path = [layout[self.agent.location],layout[self.agent.go_to],self.agent.go_to]
+                else:
+                    path = [layout[self.agent.location],"corridor2",layout[self.agent.go_to],self.agent.go_to]
+        return path
 
     def walk(self,go):
         print(f"{self.agent.pid} moving to {go}")
@@ -83,7 +97,7 @@ class WalkState(State):
             self.set_next_state(STATE_FIVE)
         else:
             self.set_next_state(STATE_SEVEN)
-        
+
 class WorkState(State):
     async def run(self):
         print(f"{self.agent.pid} is working")
@@ -96,7 +110,7 @@ class WorkState(State):
                 self.agent.go_to = "meeting"
                 self.set_next_state(STATE_TWO)
             else:
-                self.agent.go_to = "break" #temp
+                self.agent.go_to = "break" 
                 self.set_next_state(STATE_TWO)
         else:
             msg2 = await self.receive(timeout = leave_time)
@@ -104,10 +118,10 @@ class WorkState(State):
                 self.agent.go_to = "meeting"
                 self.set_next_state(STATE_TWO)
             else:
-                self.agent.go_to = "lobby" #temp
+                self.agent.go_to = "lobby" 
                 self.set_next_state(STATE_TWO)
 
-class WorkState_M(State):#team might be an issue
+class WorkState_M(State):
     async def run(self):
         print(f"{self.agent.pid} is working")
         diff = time.time()-self.agent.time
@@ -121,7 +135,7 @@ class WorkState_M(State):#team might be an issue
                 self.set_next_state(STATE_TWO)
             else:
                 for person in self.agent.team:
-                    msg3 = util.make_message(meeting_inform_template, to = person+'@anoxinon.me')#temp
+                    msg3 = util.make_message(meeting_inform_template, to = person+'@anoxinon.me')
                     await self.send(msg3)
                 self.agent.go_to = "meeting"
                 self.set_next_state(STATE_TWO)
@@ -132,7 +146,7 @@ class WorkState_M(State):#team might be an issue
                 self.set_next_state(STATE_TWO)
             else:
                 for person in self.agent.team:
-                    msg4 = util.util.make_message(meeting_inform_template, to = person+'@localhost')#temp
+                    msg4 = util.make_message(meeting_inform_template, to = person+'@anoxinon.me')
                     await self.send(msg4)
                 self.agent.go_to = "meeting"
                 self.set_next_state(STATE_TWO)
@@ -140,7 +154,7 @@ class WorkState_M(State):#team might be an issue
 class WorkState_C(State):
     async def run(self):
         print(f"{self.agent.pid} is working")
-        room_list = ["coridor1", "coridor2", "coridor3"]
+        room_list = ["corridor1", "corridor2", "corridor3"]
         if self.agent.work_count < 2 or self.agent.work_count == 3:
             if self.agent.location != "supply":
                 room_list.remove(self.agent.location)
@@ -161,9 +175,10 @@ class BreakState(State):
         print(f"{self.agent.pid} is taking a break")
         if self.agent.pref != False and random.random() < 0.3:
             self.agent.pref = random.randrange(20,30)
-            #msg = util.make_message(pref_inform_template, to='building@localhost')
-            #msg.body = self.agent.pref
-            #await self.send(msg)
+            if self.agent.position != "C":
+                msg = util.make_message(pref_inform_template, to='Agent9-om@anoxinon.me')
+                msg.body = str(self.agent.pref)
+                await self.send(msg)
         await asyncio.sleep(random.randint(5,15))
         self.agent.go_to = self.agent.office
         self.set_next_state(STATE_TWO)
@@ -177,8 +192,9 @@ class MeetingState(State):
 
 class DayEndState(State):
     async def run(self):
-        #msg = util.make_message(exit_inform_template, to='building@localhost')
-        #await self.send(msg)
+        msg = util.make_message(exit_inform_template, to='Agent9-om@anoxinon.me')
+        msg.body = self.agent.office
+        await self.send(msg)
         self.agent.location = "home"
 
 class Worker(Agent):
@@ -190,8 +206,6 @@ class Worker(Agent):
         self.pref = 24
         self.location = "home"
         self.go_to = ""
-        ###
-        ###
         self.position = "W"
         
         fsm = ExampleFSMBehaviour()

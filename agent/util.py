@@ -1,16 +1,16 @@
 from spade.message import Message
 from spade.template import Template
 
-layout = {"meeting":"coridor3",
-          "office1":"coridor1",
-          "office2":"coridor2",
-          "office3":"coridor3",
-          "lobby":"coridor1",
-          "supply":"coridor3",
-          "break":"coridor1",
-          "coridor1":("coridor2"),
-          "coridor2":("coridor1","coridor3"),
-          "coridor3":("coridor2")}
+layout = {"meeting":"corridor3",
+          "office1":"corridor1",
+          "office2":"corridor2",
+          "office3":"corridor3",
+          "lobby":"corridor1",
+          "supply":"corridor3",
+          "break":"corridor1",
+          "corridor1":("corridor2"),
+          "corridor2":("corridor1","corridor3"),
+          "corridor3":("corridor2")}
 
 class Event():
     def __init__(self, name, data, autofire = True):
